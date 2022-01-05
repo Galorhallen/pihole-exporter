@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"net"
 	"net/http"
 	"net/url"
 	"os"
@@ -62,21 +61,12 @@ func NewClient(config *config.Config) *Client {
 
 	log.Info("Creating client with config ", config)
 
-	netTransport := &http.Transport{
-		Dial: (&net.Dialer{
-			Timeout: 5 * time.Second,
-		}).Dial,
-		TLSHandshakeTimeout: 5 * time.Second,
-	}
-
 	return &Client{
 		config: config,
 		httpClient: http.Client{
 			CheckRedirect: func(req *http.Request, via []*http.Request) error {
 				return http.ErrUseLastResponse
 			},
-			Timeout:   10 * time.Second,
-			Transport: netTransport,
 		},
 		Status: make(chan *ClientChannel, 1),
 	}
