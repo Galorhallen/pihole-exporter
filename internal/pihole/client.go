@@ -68,7 +68,7 @@ func NewClient(config *config.Config) *Client {
 				return http.ErrUseLastResponse
 			},
 		},
-		Status: make(chan *ClientChannel, 1),
+		Status: make(chan *ClientChannel),
 	}
 }
 

@@ -39,9 +39,10 @@ func NewServer(port uint16, clients []*pihole.Client) *Server {
 		}
 
 		for _, client := range clients {
+			log.Debugf("Waiting on %v", client)
 			status := <-client.Status
 			if status.Status == pihole.MetricsCollectionError {
-				log.Error("Received %s from %s\n", <-client.Status, client.GetHostname())
+				log.Errorf("An error occured while contacting %s: %s", client.GetHostname(), status.Err.Error())
 			}
 		}
 
