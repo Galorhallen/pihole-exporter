@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"crypto/tls"
 
 	log "github.com/sirupsen/logrus"
 
@@ -61,9 +62,14 @@ func NewClient(config *config.Config, envConfig *config.EnvConfig) *Client {
 
 	log.Printf("Creating client with config %s\n", config)
 
+	transport := &http.Transport{
+	  TLSClientConfig: &tls.Config{InsecureSkipVerify: envConfig.SkiptTLS},
+	}
+
 	return &Client{
 		config: config,
 		httpClient: http.Client{
+			Transport: transport,
 			CheckRedirect: func(req *http.Request, via []*http.Request) error {
 				return http.ErrUseLastResponse
 			},
